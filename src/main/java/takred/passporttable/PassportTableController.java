@@ -8,7 +8,7 @@ import java.util.List;
 @RestController
 @RequestMapping(value = "/")
 public class PassportTableController {
-    PassportTableService passportTableService;
+    private final PassportTableService passportTableService;
 
     public PassportTableController(PassportTableService passportTableService) {
         this.passportTableService = passportTableService;
@@ -52,7 +52,7 @@ public class PassportTableController {
     }
 
     @PostMapping(value = "search")
-    public List<Person> searchByNamePost(Person person) {
+    public List<Person> searchPost(@RequestBody Person person) {
         return passportTableService.search(person);
     }
 }

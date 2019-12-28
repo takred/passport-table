@@ -2,6 +2,7 @@ package takred.passporttable;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import java.util.UUID;
 
 @Entity
 public class Person {
@@ -12,7 +13,9 @@ public class Person {
     private Gender gender;
     private Integer age;
     @Id
+    private UUID id = UUID.randomUUID();
     private Long numberPass;
+    private Integer dateIssue;
 
     public String getName() {
         return name;
@@ -54,11 +57,23 @@ public class Person {
         this.age = age;
     }
 
+    public UUID getId() {
+        return id;
+    }
+
     public Long getNumberPass() {
         return numberPass;
     }
 
     public void setNumberPass(Long numberPass) {
         this.numberPass = numberPass;
+    }
+
+    public Integer getDateIssue() {
+        return dateIssue;
+    }
+
+    public void setDateIssue(Integer dateIssue) {
+        this.dateIssue = dateIssue;
     }
 }

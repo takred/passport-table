@@ -10,10 +10,16 @@ import static takred.passporttable.Gender.MALE;
 
 @Service
 public class PassportTableService {
-    PersonRepository personRepository;
+    private final PersonRepository personRepository;
+    private final PassportHistoryRepository passportHistoryRepository;
 
-    public PassportTableService(PersonRepository personRepository) {
+    public PassportTableService(PersonRepository personRepository, PassportHistoryRepository passportHistoryRepository) {
         this.personRepository = personRepository;
+        this.passportHistoryRepository = passportHistoryRepository;
+    }
+
+    public void save(Person person) {
+        personRepository.save(person);
     }
 
     public void registerNewPerson(String name, String surname, String patronymic,
@@ -30,10 +36,22 @@ public class PassportTableService {
 
     public void registerNewPerson(Person person){
         personRepository.save(person);
+        Passport passport = new Passport();
+        passport.setNumberPass(person.getNumberPass());
+        passport.setDateIssue(person.getDateIssue());
+        passport.setGroupId(person.getId());
+        passportHistoryRepository.save(passport);
     }
 
-    public String correctionFullName(Long numberPuss, String fullName){
-        Person person = personRepository.findById(numberPuss).orElse(null);
+    public String correctionFullName(Long numberPass, String fullName){
+        List<Person> allPerson = new ArrayList<>(personRepository.findAll());
+        Person person = null;
+        for (int i = 0; i < allPerson.size(); i++) {
+            if (allPerson.get(i).getNumberPass().equals(numberPass)) {
+                person = allPerson.get(i);
+            }
+        }
+//        Person person = personRepository.findById(numberPuss).orElse(null);
         if (person == null) {
             return "Такого номера паспорта не существует.";
         }
@@ -47,7 +65,14 @@ public class PassportTableService {
     }
 
     public String getInfoPerson(Long numberPass) {
-        Person person = personRepository.findById(numberPass).orElse(null);
+        List<Person> allPerson = new ArrayList<>(personRepository.findAll());
+        Person person = null;
+        for (int i = 0; i < allPerson.size(); i++) {
+            if (allPerson.get(i).getNumberPass().equals(numberPass)) {
+                person = allPerson.get(i);
+            }
+        }
+//        Person person = personRepository.findById(numberPass).orElse(null);
         if (person == null){
             return "Человека по этому номеру паспорта не зарегистрированно.";
         }
@@ -64,7 +89,14 @@ public class PassportTableService {
     }
 
     public Person getInfoPersonPerson(Long numberPass) {
-        Person person = personRepository.findById(numberPass).orElse(null);
+        List<Person> allPerson = new ArrayList<>(personRepository.findAll());
+        Person person = null;
+        for (int i = 0; i < allPerson.size(); i++) {
+            if (allPerson.get(i).getNumberPass().equals(numberPass)) {
+                person = allPerson.get(i);
+            }
+        }
+//        Person person = personRepository.findById(numberPass).orElse(null);
         return person;
     }
 
@@ -80,7 +112,7 @@ public class PassportTableService {
     }
 
     public List<Person> search(Person person) {
-        List<Person> allPerson = new ArrayList<>(personRepository.findAll());
+       List<Person> allPerson = new ArrayList<>(personRepository.findAll());
         List<Person> sortList = new ArrayList<>();
         boolean coincidence = true;
         boolean searchName = person.getName() != null;
@@ -89,6 +121,7 @@ public class PassportTableService {
         boolean searchGender = person.getGender() != null;
         boolean searchAge = person.getAge() != null;
         boolean searchNumberPass = person.getNumberPass() != null;
+
 //        Integer sumNotNull = 0;
 //        if (searchName){
 //            sumNotNull++;
@@ -111,9 +144,18 @@ public class PassportTableService {
 //        if (sumNotNull == 0){
 //            return sortList;
 //        }
-
+        System.out.println(person.getName());
+        System.out.println(searchName);
         for (int i = 0; i < allPerson.size(); i++) {
-            Integer sumCoincidence = 0;
+//            Integer sumCoincidence = 0;
+
+            System.out.println(allPerson.get(i).getName());
+            System.out.println(allPerson.get(i).getSurname());
+            System.out.println(allPerson.get(i).getPatronymic());
+            System.out.println(allPerson.get(i).getGender());
+            System.out.println(allPerson.get(i).getAge());
+            System.out.println(allPerson.get(i).getNumberPass());
+            System.out.println();
             if(searchName) {
                 if (!allPerson.get(i).getName().equals(person.getName())) {
                     coincidence = false;
